@@ -1,0 +1,102 @@
+本告先生　授業メモ
+
+Math::Matrix  _mWorld = Math::Matrix::CreateTranslation(0, 3, -5);
+
+↑カメラの位置設定
+
+(0, 3, -5)
+例　
+0　横移動
+3は見る高さ
+-5　縦移動
+
+
+引数：（ fov：視野角 ）（ maxRange：描画する最長距離 ）（ minRange：描画する最短距離 ）（ aspectRatio：画面の縦横幅の比率 ）
+
+
+KdCamera() { SetProjectionMatrix(60.0f); }//視野角設定
+
+デフォルト　60.0ｆ　60°
+
+fov 視野角　ズームしたり拡張したりできる
+　簡単に言うと近くになったり遠くにできる
+
+void SetProjectionMatrix(float fov, float maxRange = 2000, float minRange = 0.01f, float aspectRatio = 0.0f);//カメラの遠い近い設定
+
+デフォルト
+例　farクリップ→2000	rearクリップ→0.01f
+
+rearクリップ　近い　カメラより前
+farクリップ	遠い　カメラより奥？
+
+//カメラ処理
+★rearクリップとfarクリップの間にないとキャラ表示されない
+★★★★★
+World（ワールド）行列　＝　大きさ * 回転 * 位置
+	W		= 　　 S 　*　 R  * 　T
+座標のXYZが正しくないとなんも映んない
+★★★★★
+
+スコープ
+例
+if()なしで
+{
+}
+をすること
+スコープをするとローカル変数がこの｛｝スコープで囲われているとこだけで使える
+｛｝スコープ外は使えぬ
+
+＊斜め移動の時早くなっていないか確認する!!!!!!＊
+斜め移動になったとき早くなるのは絶対ダメ!!!
+
+カメラ制御大事
+
+原点が０の時のカメラ制御　(固定カメラ)
+Math::Matrix  _mWorld = _mScale * _mRotation * _mTrans;
+
+・カメラがキャラに追尾する方法　キャラを原点にする
+Math::Matrix  _mWorld = (_mScale * _mRotation * _mTrans) * m_HamuWorld;
+m_HamuWorld　を基準にしてカメラの処理をして、固定する
+行列の親子関係
+
+★キャラのかくつき
+キャラ　原点の処理をカメラ処理より前に呼ぶ
+
+X軸回転
+例　顔　上下
+Y軸回転
+例　頭　右左
+Z軸回転　
+例　はてな？頭をかしげる
+
+//回転カメラ
+Math::Matrix  _mWorld = _mScale * _mRotationX * _mTrans * _mRotationY;
+見下ろしカメラを作った後、移動し、カメラを固定して、そのあとに位置を維持したまま、Ｙに回転する
+
+例　回転追従カメラ
+Math::Matrix  _mWorld = (_mScale * _mRotationX * _mTrans * _mRotationY) * m_HamuWorld;
+m_HamuWorldを基準にカメラ制御をする
+例　追従カメラ
+Math::Matrix  _mWorld = (_mScale * _mRotation * _mTrans) * m_HamuWorld;
+
+override;　オーバーライドは上書き
+　だからBaseクラスの処理をしたい場合は呼ぶ
+
+＊調べる単語＊
+デフォルト引数　引数省略
+オーバーライド　上書きされちゃう
+★ワールド行列
+単位行列
+ディグリー
+ラジアン
+マジックナンバー
+ポリモーフィズム
+
+授業独り言
+表示とかするならオブジェクトクラスはおしまない！
+　一応いろいろと便利だから
+オブジェクトクラス作らなくてもある？！
+Baseクラスはないから作るのを惜しまない
+
+
+★ファイルは分けよう
