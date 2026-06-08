@@ -3,6 +3,7 @@
 #include "GameObject/Planet/Sun/Sun.h"
 #include "GameObject/Planet/Earth/Earth.h"
 #include "GameObject/Planet/Moon/Moon.h"
+#include"GameObject/Planet/Sky/Sky.h"
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 // エントリーポイント
 // アプリケーションはこの関数から進行する
@@ -317,6 +318,11 @@ bool Application::Init(int w, int h)
 		_moon->Init();
 		_moon->SetParentPlanet(_earth);
 		m_spGameObjectList.push_back(_moon);
+
+		// 空を追加
+		std::shared_ptr<Sky>_sky = std::make_shared<Sky>();
+		_sky->Init();
+		m_spGameObjectList.push_back(_sky);
 	}
 
 	//===================================================================
