@@ -23,20 +23,24 @@ void GameScene::Init()
 	m_camera = std::make_shared<KdCamera>();
 
 	//===================================================================
+	// ステージの初期化
+	//===================================================================
+	std::shared_ptr<Terrain> _terrain = std::make_shared<Terrain>();
+	_terrain->Init();
+	AddObject(_terrain);
+
+	//===================================================================
 	// キャラクターの初期化
 	//===================================================================
 	//座標変換
 	std::shared_ptr<Hamu> _hamu = std::make_shared<Hamu>();
 	_hamu->Init();
 	_hamu->SetCamera(m_camera);
+	//ヒット対象を格納
+	_hamu->SetHitObject(_terrain);
 	AddObject(_hamu);
 
-	//===================================================================
-	// ステージの初期化
-	//===================================================================
-	std::shared_ptr<Terrain> _terrain = std::make_shared<Terrain>();
-	_terrain->Init();
-	AddObject(_terrain);
+	
 }
 
 void GameScene::Release()
