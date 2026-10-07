@@ -31,6 +31,13 @@ float BlinnPhong(float3 lightDir, float3 vCam, float3 normal, float specPower)
 //================================
 float4 main(VSOutput In) : SV_Target0
 {
+	// アウトライン描画チェック(アウトライン対応)
+	if (g_EnableOutLineDraw)
+	{
+	// アウトライン描画の場合は単色で返す
+		return float4(0, 0, 0, 1);
+	}
+	
 	// ディゾルブによる描画スキップ
 	float discardValue = g_dissolveTex.Sample(g_ss, In.UV).r;
 	if (discardValue < g_dissolveValue)
@@ -60,7 +67,8 @@ float4 main(VSOutput In) : SV_Target0
 	float3 wN2 = g_normalTex.Sample(g_ss, In.UV2).rgb;
 
 	// UV座標（0～1）から 射影座標（-1～1）へ変換
-	wN = wN * 2.0 - 1.0;
+	wN1 = wN1 * 2.0 - 1.0;
+	wN2 = wN2 * 2.0 - 1.0;
 	
 	{
 		// 3種の法線から法線行列を作成
@@ -72,11 +80,12 @@ float4 main(VSOutput In) : SV_Target0
 		};
 	
 		// 法線ベクトルをこのピクセル空間へ変換
-		wN = mul(wN, mTBN);
+		wN1 = mul(wN1, mTBN);
+		wN2 = mul(wN2, mTBN);
 	}
 
 	// 法線正規化
-	wN = normalize(wN);
+	float3 wN = normalize(wN1 + wN2);
 
 	float4 mr = g_metalRoughTex.Sample(g_ss, In.UV);
 	// 金属性

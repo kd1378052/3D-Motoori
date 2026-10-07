@@ -31,6 +31,12 @@ public:
 		float			DissolveEdgeRange = 0.03f;	// 0 ～ 1
 
 		Math::Vector3	DissolveEmissive = { 0.0f, 1.0f, 1.0f };
+	
+		// アウトライン対応
+		int EnableOutLineDraw = 0;
+		//↓パディング
+		float _blank[3] = { 0, 0, 0 };
+
 	};
 
 	// 定数バッファ(メッシュ単位更新)
@@ -128,6 +134,17 @@ public:
 		SetDissolveTexture(*m_dissolveTex);
 	}
 
+	//9/14追加
+	// アウトライン描画設定
+	void SetEnableOutLineDraw(const bool enableOutLineDraw = false)
+	{
+		if (m_cb0_Obj.Work().EnableOutLineDraw != static_cast<int>(enableOutLineDraw))
+		{
+			m_cb0_Obj.Work().EnableOutLineDraw = enableOutLineDraw;
+			m_dirtyCBObj = true;
+		}
+	}
+
 	//================================================
 	// 各定数バッファの取得
 	//================================================
@@ -204,6 +221,9 @@ private:
 
 	// 定数バッファを初期状態に戻す
 	void ResetCBObject();
+
+	// アウトライン描画設定
+	bool GetOutLineDraw() { return m_cb0_Obj.Work().EnableOutLineDraw; }
 
 	// スキンメッシュ有効かどうか(スキンメッシュ対応)
 	void SetIsSkinMeshObj(bool isSkinMEshObj)

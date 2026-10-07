@@ -11,10 +11,17 @@ VSOutput main(
 	float3 normal : NORMAL,			// 法線
 	float3 tangent : TANGENT,		// 接線
     uint4 skinIndex : SKININDEX,	// スキンメッシュのボーンインデックス(何番目のボーンに影響しているか？のデータ(最大４つぶん))
-	float4 skinWeight : SKINWEIGHT,	// ボーンの影響度(そのボーンにどれだけ影響しているか？のデータ(最大４つぶん))
-	float2 uv2 : TEXCOORD6			// テクスチャUV座標（その２）
+	float4 skinWeight : SKINWEIGHT	// ボーンの影響度(そのボーンにどれだけ影響しているか？のデータ(最大４つぶん))
 )
 {
+	//9/14追加
+	// アウトライン描画チェック(アウトライン対応)
+	if (g_EnableOutLineDraw)
+	{
+	// 頂点座標を法線方向に少しずらす
+		pos.xyz = pos.xyz + normal * 0.03;
+	}
+	
 	// スキニング---------------->
 	if (g_IsSkinMeshObj)
 	{
@@ -54,7 +61,6 @@ VSOutput main(
     // UV座標
 	Out.UV = uv * g_UVTiling + g_UVOffset;
 	// 9/7追加
-	Out.UV2 = uv2 * g_UVTiling - g_UVOffset;
 
     // 出力
 	return Out;

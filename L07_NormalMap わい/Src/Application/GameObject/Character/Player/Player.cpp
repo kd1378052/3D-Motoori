@@ -49,3 +49,23 @@ void Player::Update()
 	// ↓中でやってることは行列の更新処理
 	CharacterBase::Update();
 }
+
+void Player::DrawLit()
+{
+	//1体目は普通に描画して２体目はおっきく表示して内部を消している
+		//だからアウトラインみたいに見える
+	if (m_spModel)
+	{
+		//↓これを書いていないと真っ黒ロボットが表示される
+		CharacterBase::DrawLit();
+
+		KdShaderManager::Instance().
+			m_StandardShader.SetEnableOutLineDraw(true);
+
+		//↓これを書いていないとロボットはちゃんと表示されるが
+		// なぜか川が真っ黒になる
+		KdShaderManager::Instance().
+			m_StandardShader.DrawModel(*m_spModel, m_mWorld);
+	}
+	//m_spModel　今はロボットのモデルデータ
+}

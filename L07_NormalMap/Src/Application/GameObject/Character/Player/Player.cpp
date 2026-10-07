@@ -5,10 +5,10 @@ void Player::Init()
 {
 	if (!m_spModel)
 	{
-//		m_spModel = std::make_shared<KdModelWork>();
-//		m_spModel->SetModelData("Asset/Data/LessonData/Character/Robot/Robot.gltf");
-//		m_spAnimator = std::make_shared<KdAnimator>();
-//		m_spAnimator->SetAnimation(m_spModel->GetAnimation("Walk"));
+		//m_spModel = std::make_shared<KdModelWork>();
+		//m_spModel->SetModelData("Asset/Data/LessonData/Character/Robot/Robot.gltf");
+		//m_spAnimator = std::make_shared<KdAnimator>();
+		//m_spAnimator->SetAnimation(m_spModel->GetAnimation("Walk"));
 
 		m_spModel = std::make_shared<KdModelWork>();
 		m_spModel->SetModelData("Asset/Data/LessonData/Character/SkinMeshMan/SkinMeshMan.gltf");
@@ -48,4 +48,24 @@ void Player::Update()
 	// 親クラスのUpdate()を呼び出し
 	// ↓中でやってることは行列の更新処理
 	CharacterBase::Update();
+}
+
+void Player::DrawLit()
+{
+	//1体目は普通に描画して２体目はおっきく表示して内部を消している
+	//だからアウトラインみたいに見える
+	if (m_spModel)
+	{
+		//↓これを書いていないと真っ黒ロボットが表示される
+		CharacterBase::DrawLit();
+
+		KdShaderManager::Instance().
+			m_StandardShader.SetEnableOutLineDraw(true);
+
+		//↓これを書いていないとロボットはちゃんと表示されるが
+		// なぜか川が真っ黒になる
+		KdShaderManager::Instance().
+			m_StandardShader.DrawModel(*m_spModel, m_mWorld);
+	}
+	//m_spModel　今はロボットのモデル
 }
