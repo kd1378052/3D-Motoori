@@ -60,12 +60,6 @@ m_HamuWorld　を基準にしてカメラの処理をして、固定する
 ★キャラのかくつき
 キャラ　原点の処理をカメラ処理より前に呼ぶ
 
-X軸回転
-例　顔　上下
-Y軸回転
-例　頭　右左
-Z軸回転　
-例　はてな？頭をかしげる
 
 //回転カメラ
 Math::Matrix  _mWorld = _mScale * _mRotationX * _mTrans * _mRotationY;

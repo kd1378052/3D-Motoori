@@ -1,0 +1,66 @@
+﻿#include "Player.h"
+#include "../../Camera/CameraBase.h"
+
+void Player::Init()
+{
+	if (m_spModelList.empty())
+	{
+		std::shared_ptr<KdModelWork> _spModel;
+		_spModel = std::make_shared<KdModelWork>();
+		_spModel->SetModelData("Asset/Data/LessonData/Character/Robot/Robot.gltf");
+		m_spModelList.push_back(_spModel);
+
+		m_spAnimator = std::make_shared<KdAnimator>();
+		m_spAnimator->SetAnimation(_spModel->GetAnimation("Walk"));
+	}
+
+	SetPos({ 0.0f, 0.0f, 0.0f });
+}
+
+void Player::Update()
+{
+	// キャラクターには常に重力がかかる
+	m_Gravity += 0.01f;
+	m_mWorld._42 -= m_Gravity;
+
+	// 移動処理復活
+	float _moveSpd = 0.05f;
+	m_worldPos = GetPos();
+
+	m_moveVec = Math::Vector3::Zero;
+	if (GetAsyncKeyState('D')) { m_moveVec.x = 1.0f; }
+	if (GetAsyncKeyState('A')) { m_moveVec.x = -1.0f; }
+	if (GetAsyncKeyState('W')) { m_moveVec.z = 1.0f; }
+	if (GetAsyncKeyState('S')) { m_moveVec.z = -1.0f; }
+
+	const std::shared_ptr<CameraBase> _spCamera = GetCamera().lock();
+	if (_spCamera)
+	{
+		m_moveVec = m_moveVec.TransformNormal(m_moveVec, _spCamera->GetRotationYMatrix());
+	}
+
+	m_moveVec.Normalize();
+	m_moveVec *= _moveSpd;
+	m_worldPos += m_moveVec;
+
+	// 親クラスのUpdate()を呼び出し
+	// ↓中でやってることは行列の更新処理
+	CharacterBase::Update();
+}
+
+void Player::DrawLit()
+{
+	if (m_spModelList.empty())return;
+
+	CharacterBase::DrawLit();
+
+	KdShaderManager::Instance().
+		m_StandardShader.SetEnableOutLineDraw(true);
+
+	//↓これを書いていないとロボットはちゃんと表示されるが
+	// なぜか川が真っ黒になる
+	KdShaderManager::Instance().
+		m_StandardShader.DrawModel(*m_spModelList[0], m_mWorld);
+
+
+}
